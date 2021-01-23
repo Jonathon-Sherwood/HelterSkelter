@@ -20,8 +20,8 @@ public class ThirdPersonMovement : MonoBehaviour
     public bool canMove = true; //Freezes player movement and camera control
 
     //Allows for the cinemachine camera to return to original speed
-    float ySpeedStart;
-    float xSpeedStart;
+    float yCameraSpeedStart;
+    float xCameraSpeedStart;
 
     private void Start()
     {
@@ -30,8 +30,8 @@ public class ThirdPersonMovement : MonoBehaviour
         cinemachine = GameObject.Find("ThirdPersonCamera").GetComponent<CinemachineFreeLook>();
         bodyMenu = GetComponent<BodyMenu>();
 
-        ySpeedStart = cinemachine.m_YAxis.m_MaxSpeed; //Sets a speed to be returned to 
-        xSpeedStart = cinemachine.m_XAxis.m_MaxSpeed; //Sets a speed to be returned to
+        yCameraSpeedStart = cinemachine.m_YAxis.m_MaxSpeed; //Sets a speed to be returned to 
+        xCameraSpeedStart = cinemachine.m_XAxis.m_MaxSpeed; //Sets a speed to be returned to
     }
 
     // Update is called once per frame
@@ -57,16 +57,16 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             cinemachine.m_YAxis.m_InputAxisName = "Mouse Y";
             cinemachine.m_XAxis.m_InputAxisName = "Mouse X";
-            cinemachine.m_XAxis.m_MaxSpeed = xSpeedStart;
-            cinemachine.m_YAxis.m_MaxSpeed = ySpeedStart;
+            cinemachine.m_XAxis.m_MaxSpeed = xCameraSpeedStart;
+            cinemachine.m_YAxis.m_MaxSpeed = yCameraSpeedStart;
 
         }
         else //Removes all input but allows the camera to keep moving at a slow pace
         {
             cinemachine.m_YAxis.m_InputAxisName = "";
             cinemachine.m_XAxis.m_InputAxisName = "";
-            cinemachine.m_XAxis.m_MaxSpeed = xSpeedStart * bodyMenu.menuTimeScale;
-            cinemachine.m_YAxis.m_MaxSpeed = ySpeedStart * bodyMenu.menuTimeScale;
+            cinemachine.m_XAxis.m_MaxSpeed = xCameraSpeedStart * bodyMenu.menuTimeScale;
+            cinemachine.m_YAxis.m_MaxSpeed = yCameraSpeedStart * bodyMenu.menuTimeScale;
         }
     }
 

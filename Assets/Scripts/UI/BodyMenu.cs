@@ -24,7 +24,7 @@ public class BodyMenu : MonoBehaviour
 
     public void MenuOpen()
     {
-        if(Input.GetKey(KeyCode.LeftShift))
+        if(Input.GetKey(KeyCode.Tab))
         {
             bodyMenu.SetActive(true);
             thirdPersonMovement.canMove = false;
