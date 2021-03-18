@@ -11,20 +11,39 @@ public class ThirdPersonMovement : MonoBehaviour
     BodyMenu bodyMenu;
 
     [Tooltip("Character's Movement Speed in Meters per Second")]
+    [HideInInspector] public float currentSpeed;
     public float speed = 6f;
+    public float fastSpeed = 18;
+    public float slowSpeed = 1;
+
+    //Handles jumping
+    [Tooltip("Height of character jumping")]
+    public float jumpHeight = 1;
+    public float highJump = 2;
+    [HideInInspector] public float currentJumpHeight;
+    private bool isGrounded = true;
+    private Vector3 playerVelocity;
+    private float gravityValue = -9.81f;
 
     [Tooltip("Character facing movement direction smoothness")]
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
 
     public bool canMove = true; //Freezes player movement and camera control
+    public bool canJump = true; //Stops the player from jumping during menu
+
 
     //Allows for the cinemachine camera to return to original speed
     float yCameraSpeedStart;
     float xCameraSpeedStart;
 
+    //Calls the animation manager
+    public AnimationManager animManager;
+
     private void Start()
     {
+        currentJumpHeight = jumpHeight;
+        currentSpeed = speed;
         controller = GetComponent<CharacterController>();
         cam = GameObject.Find("Main Camera").transform;
         cinemachine = GameObject.Find("ThirdPersonCamera").GetComponent<CinemachineFreeLook>();
@@ -32,6 +51,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
         yCameraSpeedStart = cinemachine.m_YAxis.m_MaxSpeed; //Sets a speed to be returned to 
         xCameraSpeedStart = cinemachine.m_XAxis.m_MaxSpeed; //Sets a speed to be returned to
+
+        animManager = GetComponent<AnimationManager>();
     }
 
     // Update is called once per frame
@@ -45,6 +66,40 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             MoveCamera(false);
         }
+
+        Jump();
+
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            ////Play whatever walking animation is associate with this body comp
+            //if (!animManager.currentAnimator.GetBool("Walking"))
+            //{
+            //    animManager.WalkAnimation(true);
+            //}
+        }
+    }
+
+    public void Jump()
+    {
+        //Adds constant gravity downward to the controller because it doesn't use RB
+        playerVelocity.y += gravityValue * Time.deltaTime;
+        controller.Move(playerVelocity * Time.deltaTime);
+
+        //Uses the CC to determine if is grounded
+        isGrounded = controller.isGrounded;
+
+        //Stops adding velocity to the player's gravity if grounded
+        if(isGrounded && playerVelocity.y < 0)
+        {
+            playerVelocity.y = 0;
+        }
+
+        //Uses CC to add upward movement for jumping
+        if(Input.GetKey(KeyCode.Space) && isGrounded && canJump)
+        {
+            playerVelocity.y += Mathf.Sqrt(currentJumpHeight * -3 * gravityValue);
+        }
+
     }
 
     /// <summary>
@@ -92,7 +147,13 @@ public class ThirdPersonMovement : MonoBehaviour
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
             //...Move the input direction by a speed
-            controller.Move(moveDir.normalized * speed * Time.deltaTime);
+            controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
+
+            animManager.WalkAnimation(true);
+
+        } else
+        {
+            animManager.WalkAnimation(false);
         }
     }
 }
