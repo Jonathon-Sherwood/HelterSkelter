@@ -28,8 +28,11 @@ public class AnimationManager : MonoBehaviour
     public void WalkAnimation(bool isWalking)
     {
         currentAnimator.SetBool("Walking", isWalking);
-        print("I'm being called");
-        print(isWalking);
+    }
+
+    public void AttackAnimation()
+    {
+        currentAnimator.Play("Attack");
     }
 
 }

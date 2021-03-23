@@ -8,6 +8,7 @@ TagManager:
   - RARM
   - LLEG
   - RLEG
+  - Ladder
   layers:
   - Default
   - TransparentFX
