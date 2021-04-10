@@ -20,8 +20,10 @@ public class BodySwapping : MonoBehaviour
     public GameObject projectileBody;
     public List<GameObject> bodyCombinations;
 
-    //Animation
+    //Animation and particles
     private AnimationManager animManager;
+    public GameObject clouds;
+    public float cloudCountdown;
 
     //Body Parts
     public GameObject rarm, larm, lleg, rleg, head;

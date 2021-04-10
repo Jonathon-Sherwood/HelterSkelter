@@ -11,6 +11,13 @@ public class BodyMenu : MonoBehaviour
     public GameObject bodyMenu;
     ThirdPersonMovement thirdPersonMovement;
 
+
+    //Used for locking the player for a moment after transforming
+    public GameObject clouds;
+    public float frozenCountdown;
+    private float currentTimeLeft;
+    private bool transforming;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,17 +41,34 @@ public class BodyMenu : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             Time.timeScale = menuTimeScale;
-
+            transforming = true;
         }
         //On release of Tab, the cursor disappears, the player can move again, and time returns to normal
         else
         {
-            bodyMenu.SetActive(false);
-            thirdPersonMovement.canMove = true;
-            thirdPersonMovement.canJump = true;
+            if(transforming)
+            {
+                currentTimeLeft = frozenCountdown;
+                clouds.SetActive(true);
+                transforming = false;
+            }
+            currentTimeLeft -= Time.deltaTime;
+            if (currentTimeLeft < 0)
+            {
+                //Able to interact
+                thirdPersonMovement.canMove = true;
+                thirdPersonMovement.canJump = true;
+                clouds.SetActive(false);
+            }
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
+            bodyMenu.SetActive(false);
             Time.timeScale = 1f;
         }
     }
+
+
+
+
+
 }
